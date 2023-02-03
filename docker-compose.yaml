@@ -16,13 +16,6 @@ services:
     depends_on:
       - "zookeeper"
 
-#  clickhouse-client:
-#    image: yandex/clickhouse-client
-#    entrypoint:
-#      - /bin/sleep
-#    command:
-#      - infinity
-
   kafka:
     image: confluentinc/cp-kafka:latest
     volumes:
@@ -37,7 +30,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   kafka-connect:
@@ -112,8 +105,14 @@ services:
       KAFKAREST_JMX_HOSTNAME: "localhost"
       KAFKAREST_JMX_PORT: 31005
 
-#networks:
-#    default:
-#      driver: bridge
-#      driver_opts:
-#        com.docker.network.driver.mtu: 1420
+  faust:
+    build:
+      context: ./faust
+      dockerfile: Dockerfile
+    ports:
+      - '6066:6066'
+    depends_on:
+      - kafka
+      - kafka-proxy
+    environment:
+      FAUST_BROKER: "kafka://kafka"
