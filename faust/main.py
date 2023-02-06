@@ -14,8 +14,14 @@ topic = app.topic('attribution', value_type=AttributionTrigger)
 
 @app.agent(topic)
 async def attribute(attributions):
+    # connect to clickhouse
+
     async for attribution in attributions:
         print(f'Trigger from {attribution.customer_id} with amount {attribution.amount}')
+
+        # perform query by customer_id
+        # detect influence
+        # insert in conversions table
 
 
 @app.timer(interval=1.0)
