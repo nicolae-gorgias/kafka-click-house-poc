@@ -1,3 +1,5 @@
 shared/
 .idea/
 venv/
+.env
+.cubestore

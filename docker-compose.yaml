@@ -113,7 +113,7 @@ services:
   cube:
     image: cubejs/cube
     volumes:
-      - ./cube:/cube/conf/schema
+      - ./cube:/cube/conf
     ports:
       - '4000:4000'
     depends_on:
