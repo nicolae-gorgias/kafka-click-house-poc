@@ -2,7 +2,7 @@ version: "3.6"
 
 services:
   clickhouse:
-    image: yandex/clickhouse-server
+    image: clickhouse/clickhouse-server:22.10.7
     volumes:
 #      - ./clickhouse/config.xml:/etc/clickhouse-server/config.xml
 #      - ./clickhouse/zookeeper-servers.xml:/etc/clickhouse-server/conf.d/zookeeper-servers.xml
@@ -68,13 +68,6 @@ services:
           - "2181:2181"
           - "2182:2182"
 
-#  cube:
-#    image: cubejs/cube
-#    environment:
-#      CUBEJS_DEV_MODE: true
-#    ports:
-#      - 4000:4000
-
 #  schema-registry:
 #    image: confluentinc/cp-schema-registry:5.3.0
 #    depends_on:
@@ -116,3 +109,14 @@ services:
       - kafka-proxy
     environment:
       FAUST_BROKER: "kafka://kafka"
+
+  cube:
+    image: cubejs/cube
+    volumes:
+      - ./cube:/cube/conf/schema
+    ports:
+      - '4000:4000'
+    depends_on:
+      - clickhouse
+    environment:
+      CUBEJS_DEV_MODE: "true"
